@@ -1,5 +1,4 @@
 from aiogram import Bot, Dispatcher, executor, types
-API_TOKEN = '5818591053:AAFZc3LJiRLkzNHIEh4TnBshzHWwIdpSABU'
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
 
