@@ -2,7 +2,7 @@ from openpyxl import load_workbook
 import re
 book = load_workbook(filename="C:/Users/Deserag/Downloads/Telegram Desktop/10%2013.03-18.03.xlsx")
 
-# 65-90 A-Z
+
 
 sheet = book['Колледж ВятГУ']
 pattern = r"Группа .{2,3}к"
