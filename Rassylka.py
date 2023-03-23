@@ -1,6 +1,6 @@
 import telebot
 
-bot = telebot.TeleBot('6250495165:AAFPkRdtt8OMpEjHc-3n50afVH6ytQ1H6VI')
+bot = telebot.TeleBot('токен')
 
 #Создаем текстовый файл для записи id пользователя
 @bot.message_handler(commands=['start'])
