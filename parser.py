@@ -58,7 +58,7 @@ while True:
                 x = 26
                
                 for i in range(40):
-                        groups_with_data.append([val,pars[i%7],days[i%7],sheet[simvol+str(x)].value])
+                        groups_with_data.append([val,pars[i%7],days[i//7],sheet[simvol+str(x)].value])
                         # print(sheet[simvol+str(x)].value)
                         x+=1
                 x = 26
@@ -94,5 +94,5 @@ while True:
                 
                 kolich +=1
 
-#for i in groups_with_data:
-        #print(i)
+for i in groups_with_data:
+        print(i)
