@@ -1,5 +1,22 @@
 from openpyxl import load_workbook
+import imaplib
+import email
+from email.header import decode_header
+import base64
+from bs4 import BeautifulSoup
 import re
+#библиотеки для парсинга, для подключения к почте
+
+# mail_pass = "2e09A6xsYfSpBgqBgwuD"
+# username = "testraspisania@mail.ru"
+# imap_server = "imap.mail.ru"
+# imap = imaplib.IMAP4_SSL(imap_server)
+# imap.login(username, mail_pass)
+# #
+# imap.select("INBOX")
+
+# imap.search(None, 'ALL')
+
 book = load_workbook(filename="C:/Users/Deserag/Downloads/Telegram Desktop/10%2013.03-18.03.xlsx")
 
 
@@ -29,7 +46,7 @@ def change_sim(simvol):
                                 simvol = chr(ord(simvol[-2])+1)+"A"
                 return simvol
 pars =['1 пара', '2 пара', '3 пара', '4 пара', '5 пара', '6 пара', '7 пара']
-days =['понедельник', 'вторник', 'среда', 'четверг', 'пятгница', 'суббота', '7 пара']
+days =['понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота', '7 пара']
 done_group = 0
 groups_with_data = []
 while True:
@@ -41,7 +58,7 @@ while True:
                 x = 26
                
                 for i in range(40):
-                        groups_with_data.append([val,pars[i%7],sheet[simvol+str(x)].value])
+                        groups_with_data.append([val,pars[i%7],days[i%7],sheet[simvol+str(x)].value])
                         # print(sheet[simvol+str(x)].value)
                         x+=1
                 x = 26
@@ -77,6 +94,5 @@ while True:
                 
                 kolich +=1
 
-for i in groups_with_data:
-        print(i)
-
+#for i in groups_with_data:
+        #print(i)
