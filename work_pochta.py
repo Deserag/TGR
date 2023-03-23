@@ -8,6 +8,7 @@ def get_attachments():
     imap_server = "imap.mail.ru"
     imap = imaplib.IMAP4_SSL(imap_server)
     imap.login(username, mail_pass)
+    #подключение к почте
 
     imap.select("INBOX")
 
