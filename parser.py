@@ -59,6 +59,7 @@ while True:
                
                 for i in range(40):
                         groups_with_data.append([val,pars[i%7],days[i//7],sheet[simvol+str(x)].value])
+                        #вывод расписания с днем недели и номером пары
                         # print(sheet[simvol+str(x)].value)
                         x+=1
                 x = 26
