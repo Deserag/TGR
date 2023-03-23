@@ -10,7 +10,6 @@ from work_pochta import get_attachments
 
 # библиотеки для парсинга, для подключения к почте
 
-
 book = load_workbook(filename=BytesIO(get_attachments()))
 #выбор нужного файла из почты
 
