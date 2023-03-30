@@ -7,15 +7,8 @@ from bs4 import BeautifulSoup
 import re
 from io import BytesIO
 from work_pochta import get_attachments
-
-# библиотеки для парсинга, для подключения к почте
-
-
 import psycopg2
-
-#библиотека для работы с postgresql
-
-
+#библиотека для работы с postgresq
 # установление соединения с базой данных
 conn = psycopg2.connect(dbname='BotDBtest', user='postgres', password='danilworld1', host='127.0.0.1', port='5432')
 
