@@ -8,7 +8,7 @@ def start(message):
     with open('chatids.txt', 'a+') as chatids:
         print(message.chat.id, file=chatids)
 
-#Делаем проверку пользователя на администратора
+#Делаем проверку пользователя на администратора#
 @bot.message_handler(commands=['rassylka'])
 def rassylka(message):
     if message.chat.id == 5230826045:
