@@ -10,7 +10,7 @@ def send_welcome(message: types.Message):
 
 def get_name(message: types.Message):
     print(message.text)
-    # тут у вас то что ввел юзер
+    # тут , то что ввел пользователь
     bot.send_message(chat_id=message.chat.id, text=f'Приятно познакомиться, {message.text}!!!\n'
                                                    f'Напиши свою группу')
     bot.register_next_step_handler(message, get_age)
