@@ -18,5 +18,5 @@ def get_name(message: types.Message):
 def get_age(message: types.Message):
     bot.send_message(chat_id=message.chat.id, text=f'Твоя группа изменена, {message.text}\n')
 
-
+#
 bot.polling(skip_pending=True)
