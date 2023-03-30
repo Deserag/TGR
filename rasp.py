@@ -2,7 +2,7 @@ import telebot
 from telebot import types
 
 bot = telebot.TeleBot('6250495165:AAFPkRdtt8OMpEjHc-3n50afVH6ytQ1H6VI')
-
+#
 @bot.message_handler(commands=['schedule'])
 def schedule(message):
     markup_inline = types.InlineKeyboardMarkup()
