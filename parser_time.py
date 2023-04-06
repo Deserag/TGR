@@ -7,8 +7,15 @@ from bs4 import BeautifulSoup
 import re
 from io import BytesIO
 from work_pochta import get_attachments
+
+# библиотеки для парсинга, для подключения к почте
+
+
 import psycopg2
-#библиотека для работы с postgresq
+
+#библиотека для работы с postgresql
+
+
 # установление соединения с базой данных
 conn = psycopg2.connect(dbname='BotDBtest', user='postgres', password='danilworld1', host='127.0.0.1', port='5432')
 
@@ -22,7 +29,7 @@ cur = conn.cursor()
 
 #book = load_workbook(filename=BytesIO(get_attachments()))
 
-book = load_workbook(filename="12_27_03-01_04.xlsx")
+book = load_workbook(filename="13_03_04-08_04.xlsx")
 #выбор нужного файла из почты
 
 sheet = book['Колледж ВятГУ']
