@@ -3,7 +3,7 @@ import email
 
 
 def get_attachments():
-    mail_pass = "2e09A6xsYfSpBgqBgwuD"
+    mail_pass = "G4$gq53g2h4"
     username = "testraspisania@mail.ru"
     imap_server = "imap.mail.ru"
     imap = imaplib.IMAP4_SSL(imap_server)
