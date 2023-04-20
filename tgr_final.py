@@ -2,7 +2,6 @@ import telebot
 from telebot import types
 
 import datetime
-import time
 import psycopg2
 
 #библиотека для работы с postgresql
@@ -58,10 +57,10 @@ def bot_message(message):
 
     if message.chat.type == 'private':
         if message.text == '📚 Расписание':
-            markup = types.ReplyKeyboardMarkup (resize_keyboard= True)
-            item1 = types.KeyboardButton('🧑‍🎓 Расписание группы')
-            item2 = types.KeyboardButton('👨‍🏫 Расписание преподавателя')
-            item3 = types.KeyboardButton('🔔 Расписание звонков')
+            markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+            item1 = types.KeyboardButton('Расписание группы')
+            item2 = types.KeyboardButton('Расписание преподавателя')
+            item3 = types.KeyboardButton('Расписание звонков')
             back = types.KeyboardButton('🔚Назад')
             markup.add(item1, item2, item3, back)
 
@@ -101,9 +100,9 @@ def bot_message(message):
             bot.register_next_step_handler(message, get_admin_group)
         elif message.text == 'Отправить всем':
             markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-            item1 = types.KeyboardButton('тег1')
-            item2 = types.KeyboardButton('тег2')
-            item3 = types.KeyboardButton('тег3')
+            item1 = types.KeyboardButton('мероприятие')
+            item2 = types.KeyboardButton('расписание')
+            item3 = types.KeyboardButton('уведомление')
             item4 = types.KeyboardButton('Продолжить')
             back = types.KeyboardButton('🔚Назад')
             markup.add(item1, item2, item3, item4, back)
@@ -119,15 +118,15 @@ def bot_message(message):
         elif message.text == '⚙ Настройки':
             markup = types.ReplyKeyboardMarkup (resize_keyboard= True)
             item1 = types.KeyboardButton('✏ Изменить групппу')
-            item2 = types.KeyboardButton('📳 Вкл.уведомления')
-            item3 = types.KeyboardButton('📴 Выкл.уведомления')
+            item2 = types.KeyboardButton('📳 Вкл.рассылку')
+            item3 = types.KeyboardButton('📴 Выкл.рассылку')
             back = types.KeyboardButton('🔚Назад')
             markup.add(item1, item2, item3, back)
 
             bot.send_message (message.chat.id,'⚙ Настройки',reply_markup=markup)
     #проверка того является пользователь администратором или нет при выходе в главное меню
         elif message.text == '🔚Назад':
-
+            admin_tags.clear()
             # Получаем id пользователя
             telegram_id = str(message.from_user.id)
 
@@ -162,11 +161,12 @@ def bot_message(message):
                 bot.send_message(message.chat.id, '🔚Назад', reply_markup=markup)
 
         
-        elif message.text == '🔔 Расписание звонков':
-            bot.send_message(message.chat.id, 'Вывод расписания звонков')
+        elif message.text == 'Расписание звонков':
+            spravka = open('raspi.txt', 'r', encoding='utf-8')
+            bot.send_message(message.chat.id, spravka.read())
 
     #создание кнопок для работы с расписанием
-        elif message.text == '🧑‍🎓 Расписание группы':
+        elif message.text == 'Расписание группы':
             markup = types.ReplyKeyboardMarkup (resize_keyboard= True)
             item1 = types.KeyboardButton('Сегодня')
             item2 = types.KeyboardButton('Завтра')
@@ -178,12 +178,12 @@ def bot_message(message):
 
 
 
-        elif message.text == '👨‍🏫 Расписание преподавателя':
+        elif message.text == 'Расписание преподавателя':
             bot.send_message(message.chat.id, "Введите имя преподователя:\nВ формате Иванов И.И.")
             bot.register_next_step_handler(message, get_teacher_name)
 
 
-        elif message.text == '📳 Вкл.уведомления':
+        elif message.text == '📳 Вкл.рассылку':
             # Получаем id пользователя
             telegram_id = message.from_user.id
             # Записываем данные в таблицу users
@@ -196,14 +196,14 @@ def bot_message(message):
             # заново делаем кнопочки
             markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
             item1 = types.KeyboardButton('✏ Изменить групппу')
-            item2 = types.KeyboardButton('📳 Вкл.уведомления')
-            item3 = types.KeyboardButton('📴 Выкл.уведомления')
+            item2 = types.KeyboardButton('📳 Вкл.рассылку')
+            item3 = types.KeyboardButton('📴 Выкл.рассылку')
             back = types.KeyboardButton('🔚Назад')
             markup.add(item1, item2, item3, back)
             bot.send_message(message.chat.id, 'Рассылка расписания успешно включена')
 
 
-        elif message.text == '📴 Выкл.уведомления':
+        elif message.text == '📴 Выкл.рассылку':
             # Получаем id пользователя
             telegram_id = message.from_user.id
             # Записываем данные в таблицу users
@@ -216,8 +216,8 @@ def bot_message(message):
             # заново делаем кнопочки
             markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
             item1 = types.KeyboardButton('✏ Изменить групппу')
-            item2 = types.KeyboardButton('📳 Вкл.уведомления')
-            item3 = types.KeyboardButton('📴 Выкл.уведомления')
+            item2 = types.KeyboardButton('📳 Вкл.рассылку')
+            item3 = types.KeyboardButton('📴 Выкл.рассылку')
             back = types.KeyboardButton('🔚Назад')
             markup.add(item1, item2, item3, back)
             bot.send_message(message.chat.id, 'Рассылка расписания успешно выключена')
@@ -235,7 +235,7 @@ def bot_message(message):
 
 
             cur.execute(
-                "SELECT day, subject, teacher, classroom, lecture_type, lecture_time FROM lecture WHERE group_id ILIKE %s AND day = %s",
+                "SELECT day, subject, teacher, classroom, lecture_type, lecture_time FROM lecture WHERE group_id ILIKE %s AND day = %s ORDER BY id_lecture",
                 (f"{group_name}%", day_of_week))
 
             # получение результата и сохранение его в список
@@ -258,7 +258,7 @@ def bot_message(message):
                 text += f"——/ {lesson[5]} /——\n{lesson[1]}\n{lesson[4]}\n{lesson[2]}\n{lesson[3]}\n\n"
 
 
-
+            # text = str(text).replace("None", " ").replace("\n", " ").replace("  ", "")
             text = str(text).replace("None \n", " ").replace("None", "")
 
 
@@ -277,7 +277,7 @@ def bot_message(message):
             group_name = cur.fetchone()[0]
 
             cur.execute(
-                "SELECT day, subject, teacher, classroom, lecture_type, lecture_time FROM lecture WHERE group_id ILIKE %s AND day = %s",
+                "SELECT day, subject, teacher, classroom, lecture_type, lecture_time FROM lecture WHERE group_id ILIKE %s AND day = %s ORDER BY id_lecture",
                 (f"{group_name}%", day_tomorrow))
 
             # получение результата и сохранение его в список
@@ -287,9 +287,6 @@ def bot_message(message):
 
             result_list2 = []
             result_list2 = [row for row in result_list if row[1] is not None or row[2] is not None]
-
-
-
 
 
             text = ""
@@ -303,6 +300,7 @@ def bot_message(message):
                 text += f"——/ {lesson[5]} /——\n{lesson[1]}\n{lesson[4]}\n{lesson[2]}\n{lesson[3]}\n\n"
 
 
+            #text = str(text).replace("None", " ").replace("\n", " ").replace("  ", "")
             text = str(text).replace("None \n", " ").replace("None", "")
 
 
@@ -320,13 +318,14 @@ def bot_message(message):
             group_name = cur.fetchone()[0]
 
             cur.execute(
-                "SELECT day, subject, teacher, classroom, lecture_type, lecture_time FROM lecture WHERE group_id = %s",
+                "SELECT day, subject, teacher, classroom, lecture_type, lecture_time FROM lecture WHERE group_id = %s ORDER BY id_lecture",
                 (f"{group_name}",))
 
             result_list = cur.fetchall()
 
             result_list2 = []
             result_list2 = [row for row in result_list if row[1] is not None or row[2] is not None]
+
 
 
             text = ""
@@ -346,14 +345,7 @@ def bot_message(message):
                 bot.send_message(message.chat.id, text)
                 text = ""
 
-        elif message.text == '📳 Вкл.уведомления':
-            markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-            item1 = types.KeyboardButton('6:00')
-            item2 = types.KeyboardButton('12:00')
-            item3 = types.KeyboardButton('Послезавтра')
-            item4 = types.KeyboardButton('Текущая неделя')
-            back = types.KeyboardButton('🔚Назад')
-            markup.add(item1, item2, item3, item4, back)
+
 
 
         
@@ -377,8 +369,12 @@ def bot_message(message):
             result_list = cur.fetchall()
 
 
+
             result_list2 = []
             result_list2 = [row for row in result_list if row[1] is not None or row[2] is not None]
+
+
+
 
 
             text = ""
@@ -391,7 +387,7 @@ def bot_message(message):
 
 
 
-
+            text = str(text).replace("None \n", " ").replace("None", "")
 
             if text == "":
                 bot.send_message(message.chat.id, 'Возникла ошибка при выводе расписания:\nПреподаватель был занесён в неправильном формате/в данный день у преподавателя нет пар')
@@ -422,6 +418,9 @@ def bot_message(message):
             result_list2 = [row for row in result_list if row[1] is not None or row[2] is not None]
 
 
+
+
+
             text = ""
             current_day = ""
             for lesson in result_list2:
@@ -431,6 +430,8 @@ def bot_message(message):
                 text += f"——/ {lesson[5]} /——\n{lesson[1]}\n{lesson[4]}\n{lesson[2]}\n{lesson[3]}\n\n"
 
 
+
+            text = str(text).replace("None \n", " ").replace("None", "")
 
             if text == "":
                 bot.send_message(message.chat.id, 'Возникла ошибка при выводе расписания:\nПреподаватель был занесён в неправильном формате/в данный день у преподавателя нет пар')
@@ -449,21 +450,37 @@ def bot_message(message):
             teacher_name = cur.fetchone()[0]
 
             cur.execute(
-                "SELECT day, subject, group_id, classroom, lecture_type, lecture_time FROM lecture WHERE teacher = %s",
+    "SELECT day, subject, group_id, classroom, lecture_type, lecture_time "
+    "FROM lecture "
+    "WHERE teacher = %s "
+    "ORDER BY "
+    "  CASE day "
+    "    WHEN 'Понедельник' THEN 1 "
+    "    WHEN 'Вторник' THEN 2 "
+    "    WHEN 'Среда' THEN 3 "
+    "    WHEN 'Четверг' THEN 4 "
+    "    WHEN 'Пятница' THEN 5 "
+    "    WHEN 'Суббота' THEN 6 "
+    "    ELSE 7 "
+    "  END, "
+    "  CASE "
+    "    WHEN lecture_time = '8:20-9:50' THEN 1 "
+    "    WHEN lecture_time = '10:00-11:30' THEN 2 "
+    "    WHEN lecture_time = '11:45-13:15' THEN 3 "
+    "    WHEN lecture_time = '14:00-15:30' THEN 4 "
+    "    WHEN lecture_time = '15:45-17:15' THEN 5 "
+    "    WHEN lecture_time = '17:20-18:50' THEN 6 "
+    "    ELSE 7 "
+    "  END",
                 (f"{teacher_name}",))
 
             result_list = cur.fetchall()
-
-            result_list2 = []
-            for row in result_list:
-                if all(row[1:]):
-                    result_list2.append(row)
 
 
 
             days_of_week = ['понедельник', 'вторник', 'среда', 'четверг', 'пятница', 'суббота', 'воскресенье']
 
-            sorted_list = sorted(result_list2, key=lambda x: days_of_week.index(x[0]))
+            sorted_list = sorted(result_list, key=lambda x: days_of_week.index(x[0]))
 
             text = ""
             current_day = ""
@@ -472,6 +489,8 @@ def bot_message(message):
                     current_day = lesson[0]
                     text += f"\n——{current_day}——\n\n"
                 text += f"——/ {lesson[5]} /——\n{lesson[1]}\n{lesson[4]}\n{lesson[2]}\n{lesson[3]}\n\n"
+
+            text = str(text).replace("None", "")
 
 
 
@@ -485,7 +504,7 @@ def bot_message(message):
 
         elif message.text == '✏ Изменить групппу':
             # Запрашиваем у пользователя имя его группы
-            bot.send_message(message.chat.id, 'Введите имя вашей группы:')
+            bot.send_message(message.chat.id, 'Введите имя вашей группы:\nНапример ИСПк-304-52-00')
             # Регистрируем обработчик для следующего сообщения пользователя
             bot.register_next_step_handler(message, change_user_group)
 
@@ -542,7 +561,7 @@ def get_user_group(message):
 
 
 
-    if user_admin:
+    if user_admin == True:
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)  # размер кнопок подгоняются зависимо от их количества
         # создание кнопок меню
         item1 = types.KeyboardButton('📚 Расписание')
@@ -561,7 +580,7 @@ def get_user_group(message):
         item4 = types.KeyboardButton('📃 Справка')
         item5 = types.KeyboardButton('⚙ Настройки')
         markup.add(item1, item2, item4, item5)
-        bot.send_message(message.chat.id, 'Приятного использования, студент!', reply_markup=markup)
+        bot.send_message(message.chat.id, 'Приятного использования, пользователь!', reply_markup=markup)
 
 #функция смены группы пользователя в бд
 
@@ -580,8 +599,8 @@ def change_user_group(message):
     #заново делаем кнопочки
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     item1 = types.KeyboardButton('✏ Изменить групппу')
-    item2 = types.KeyboardButton('📳 Вкл.уведомления')
-    item3 = types.KeyboardButton('📴 Выкл.уведомления')
+    item2 = types.KeyboardButton('📳 Вкл.рассылку')
+    item3 = types.KeyboardButton('📴 Выкл.рассылку')
     back = types.KeyboardButton('🔚Назад')
     markup.add(item1, item2, item3, back)
     bot.send_message(message.chat.id, 'Группа успешно изменена')
@@ -593,9 +612,9 @@ def get_admin_group(message):
     global admin_group
     admin_group = message.text
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    item1 = types.KeyboardButton('тег1')
-    item2 = types.KeyboardButton('тег2')
-    item3 = types.KeyboardButton('тег3')
+    item1 = types.KeyboardButton('мероприятие')
+    item2 = types.KeyboardButton('расписание')
+    item3 = types.KeyboardButton('уведомление')
     item4 = types.KeyboardButton('Продолжить')
     back = types.KeyboardButton('🔚Назад')
     markup.add(item1, item2, item3, item4, back)
@@ -608,7 +627,6 @@ def get_admin_group(message):
 def send_message_to_group(message):
     admin_text = message.text
     admin_id = message.chat.id
-
 
 
     cur.execute(
@@ -639,7 +657,7 @@ def get_admin_text(message):
     admin_id = message.chat.id
 
     cur.execute(
-        "INSERT INTO history_message (sender_message, text_message, group_message) VALUES (%s, %s)",
+        "INSERT INTO history_message (sender_message, text_message) VALUES (%s, %s)",
         (admin_id, admin_text)
     )
     conn.commit()
@@ -662,12 +680,12 @@ def get_admin_text(message):
 
 def get_tags(message):
     global admin_tags
-    if message.text == 'тег1' or message.text == 'тег2' or message.text == 'тег3':
+    if message.text == 'мероприятие' or message.text == 'расписание' or message.text == 'уведомление':
         admin_tags.append(message.text)
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        item1 = types.KeyboardButton('тег1')
-        item2 = types.KeyboardButton('тег2')
-        item3 = types.KeyboardButton('тег3')
+        item1 = types.KeyboardButton('мероприятие')
+        item2 = types.KeyboardButton('расписание')
+        item3 = types.KeyboardButton('уведомление')
         item4 = types.KeyboardButton('Продолжить')
         back = types.KeyboardButton('🔚Назад')
         markup.add(item1, item2, item3, item4, back)
@@ -679,19 +697,21 @@ def get_tags(message):
         bot.register_next_step_handler(message, send_message_to_group)
 
 
+
+
 def get_tags_to_all(message):
     global admin_tags
-    if message.text == 'тег1' or message.text == 'тег2' or message.text == 'тег3':
+    if message.text == 'мероприятие' or message.text == 'расписание' or message.text == 'уведомление':
         admin_tags.append(message.text)
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        item1 = types.KeyboardButton('тег1')
-        item2 = types.KeyboardButton('тег2')
-        item3 = types.KeyboardButton('тег3')
+        item1 = types.KeyboardButton('мероприятие')
+        item2 = types.KeyboardButton('расписание')
+        item3 = types.KeyboardButton('уведомление')
         item4 = types.KeyboardButton('Продолжить')
         back = types.KeyboardButton('🔚Назад')
         markup.add(item1, item2, item3, item4, back)
         bot.send_message(message.chat.id, 'Выберите теги:', reply_markup=markup)
-        bot.register_next_step_handler(message, get_tags)
+        bot.register_next_step_handler(message, get_tags_to_all)
     elif message.text == 'Продолжить':
 
         bot.send_message(message.chat.id, 'Введите текст сообщения:')
