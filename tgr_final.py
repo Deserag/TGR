@@ -15,7 +15,7 @@ cur = conn.cursor()
 
 #вводим токен бота
 
-bot = telebot.TeleBot ("5818591053:AAFZc3LJiRLkzNHIEh4TnBshzHWwIdpSABU")
+bot = telebot.TeleBot ("")
 
 
 
