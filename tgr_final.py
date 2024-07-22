@@ -8,7 +8,7 @@ import psycopg2
 
 
 # установление соединения с базой данных
-conn = psycopg2.connect(dbname='BotDBtest', user='postgres', password='danilworld1', host='127.0.0.1', port='5432')
+conn = psycopg2.connect()
 
 # создание объекта курсора
 cur = conn.cursor()
